@@ -24,6 +24,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 @property (nonatomic, assign, getter=isAnimating) BOOL animating;
 @property (nonatomic, assign) CGPoint notExpandedCenterPoint;
+@property (nonatomic, assign, getter=isDelegateNotificationNeeded) BOOL delegateNotificationNeeded;
 
 @property (nonatomic, retain) RadiusControlSubviewWithLabel *firstSubview;
 @property (nonatomic, retain) RadiusControlSubviewWithLabel *secondSubview;
@@ -36,8 +37,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 
 @property (nonatomic, retain) NSTimer *hideControlTimer;
 
-
-- (void)_initControl;
+- (void)_initRadiusControl;
 
 - (void)_toogleSize;
 
@@ -72,11 +72,13 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 @synthesize selectedValue = _selectedValue;
 @synthesize currentSelectedView = _currentSelectedView;
 @synthesize hideControlTimer = _hideControlTimer;
+@synthesize delegate = _delegate;
+@synthesize delegateNotificationNeeded = _delegateNotificationNeeded;
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         // Initialization code
-		[self _initControl];
+		[self _initRadiusControl];
     }
     return self;
 }
@@ -85,7 +87,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 {
 	self = [super initWithCoder:aDecoder];
 	if (self != nil) {
-		[self _initControl];
+		[self _initRadiusControl];
 	}
 	return self;
 }
@@ -121,7 +123,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 
 - (void)onRefreshAction:(id)sender
 {
-	if (NO == self.isExpanded) {
+	if (NO == [self isExpanded]) {
 		return;
 	}
 	[self performSelector:@selector(_handleDecreasingAnimation) withObject:nil afterDelay:0.1];
@@ -141,24 +143,40 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 
 - (void)_onFirstButton:(id)sender
 {	
+	if (self.selectedValue != RadiusControlValueFirst) {
+		self.delegateNotificationNeeded = YES;
+	}
+	
 	self.selectedValue = RadiusControlValueFirst;
 	[self _toogleSize];
 }
 
 - (void)_onSecondButton:(id)sender
 {	
+	if (self.selectedValue != RadiusControlValueSecond) {
+		self.delegateNotificationNeeded = YES;
+	}
+	
 	self.selectedValue = RadiusControlValueSecond;
 	[self _toogleSize];
 }
 
 - (void)_onThirdButton:(id)sender
 {	
+	if (self.selectedValue != RadiusControlValueThird) {
+		self.delegateNotificationNeeded = YES;
+	}
+	
 	self.selectedValue = RadiusControlValueThird;
 	[self _toogleSize];
 }
 
 - (void)_onFourthButton:(id)sender
 {	
+	if (self.selectedValue != RadiusControlValueFourth) {
+		self.delegateNotificationNeeded = YES;
+	}
+	
 	self.selectedValue = RadiusControlValueFourth;
 	[self _toogleSize];
 }
@@ -168,7 +186,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 
 - (void)_handleExpandingAnimation
 {
-	if (self.isAnimating) {
+	if ([self isAnimating]) {
 		return;
 	}
 	
@@ -181,7 +199,6 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	
 	[self.currentSelectedView removeFromSuperview];
 	self.currentSelectedView = nil;
-	
 	
 	
 	[UIView beginAnimations:nil context:nil];
@@ -208,27 +225,29 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	self.thirdSubview.alpha = 1.0;
 	self.fourthSubview.alpha = 1.0;
 	
+
+	RadiusControlSubview *selectedSubview = nil;
+	
+	// Reset
+	self.firstSubview.selected = NO;
+	self.secondSubview.selected = NO;
+	self.thirdSubview.selected = NO;
+	self.fourthSubview.selected = NO;
+	
 	if (self.selectedValue == RadiusControlValueFirst) {
-		self.firstSubview.selected = YES;
-		self.secondSubview.selected = NO;
-		self.thirdSubview.selected = NO;
-		self.fourthSubview.selected = NO;
+		selectedSubview = self.firstSubview;
 	} else if (self.selectedValue == RadiusControlValueSecond) {
-		self.firstSubview.selected = NO;
-		self.secondSubview.selected = YES;
-		self.thirdSubview.selected = NO;
-		self.fourthSubview.selected = NO;
+		selectedSubview = self.secondSubview;
 	} else if (self.selectedValue == RadiusControlValueThird) {
-		self.firstSubview.selected = NO;
-		self.secondSubview.selected = NO;
-		self.thirdSubview.selected = YES;
-		self.fourthSubview.selected = NO;
+		selectedSubview = self.thirdSubview;
 	} else if (self.selectedValue == RadiusControlValueFourth) {
-		self.firstSubview.selected = NO;
-		self.secondSubview.selected = NO;
-		self.thirdSubview.selected = NO;
-		self.fourthSubview.selected = YES;		
+		selectedSubview = self.fourthSubview;
 	}
+	
+	if (nil != selectedSubview) {
+		selectedSubview.selected = YES;
+	}
+	
 	[UIView commitAnimations];
 }
 
@@ -262,7 +281,6 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	[self addSubview:fourthButton];
 	[fourthButton release];
 	
-	
 	self.hideControlTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(_handleDecreasingAnimation) userInfo:nil repeats:NO];
 }
 
@@ -273,7 +291,7 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 {
 	[self _destroyHideControlTimer];
 	
-	if (self.isAnimating) {
+	if ([self isAnimating]) {
 		return;
 	}
 	
@@ -327,6 +345,18 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	selectedView.alpha = 1.0;
 	[self addSubview:selectedView];
 	self.currentSelectedView = selectedView;
+	
+	if ([self isDelegateNotificationNeeded]) {
+		if (self.delegate 
+			&& [self.delegate conformsToProtocol:@protocol(RadiusControlDelegate)] 
+			&& [self.delegate respondsToSelector:@selector(radiusControl:valueChangedTo:)]) 
+		{
+			[self.delegate performSelector:@selector(radiusControl:valueChangedTo:) 
+								withObject:self 
+								withObject:[NSNumber numberWithInt:self.selectedValue]];
+		}
+	}
+	self.delegateNotificationNeeded = NO;
 }
 
 - (void)_startViewSizeDecreasingAnimation
@@ -352,29 +382,27 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 
 - (void)_toogleSize
 {
-	// Center Punkt festhalten
-	if (self.isExpanded == NO && CGPointEqualToPoint(self.notExpandedCenterPoint, CGPointMake(-1*CGFLOAT_MAX, -1*CGFLOAT_MAX))) {
+	if ([self isExpanded] == NO && CGPointEqualToPoint(self.notExpandedCenterPoint, CGPointMake(-1*CGFLOAT_MAX, -1*CGFLOAT_MAX))) {
 		self.notExpandedCenterPoint = self.center;
 	}
 	
-	if (self.isAnimating) {
+	if ([self isAnimating]) {
 		return;
 	}
 	
 	// Animating
-	if (NO == self.isExpanded) {
-		// Vergroessern
+	if (NO == [self isExpanded]) {
 		[self _handleExpandingAnimation];
 	} else {
-		// Verkleinern
 		[self _handleDecreasingAnimation];
 	}
 }
 
-- (void)_initControl
+- (void)_initRadiusControl
 {
 	_expanded = NO;
 	_animating = NO;
+	_delegateNotificationNeeded = NO;
 	
 	_selectedValue = RadiusControlValueFirst;
 	
@@ -441,6 +469,8 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 #pragma mark -
 
 - (void)dealloc {
+	_delegate = nil;
+	
 	[_label release], _label = nil;
 	[_refreshButtonView release], _refreshButtonView = nil;
 	
@@ -454,7 +484,6 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	
     [super dealloc];
 }
-
 
 @end
 

@@ -10,23 +10,26 @@
 
 @class RadiusControlSubview;
 @class RadiusControlSubviewWithLabel;
+@protocol RadiusControlDelegate;
 
 typedef enum _RadiusControlValue {
-	RadiusControlValueFirst,
-	RadiusControlValueSecond,
-	RadiusControlValueThird,
-	RadiusControlValueFourth
+	RadiusControlValueFirst = 1,
+	RadiusControlValueSecond = 2,
+	RadiusControlValueThird = 3,
+	RadiusControlValueFourth = 4
 } RadiusControlValue;
 
 
 @interface RadiusControl : UIView {
+	id <RadiusControlDelegate> _delegate; 
 	BOOL _expanded;
 	BOOL _animating;
+	BOOL _delegateNotificationNeeded;
+	
 	UILabel *_label;
 	CGPoint _notExpandedCenterPoint;
 	
 	RadiusControlSubview *_refreshButtonView;
-	
 	
 	RadiusControlSubviewWithLabel *_firstSubview;
 	RadiusControlSubviewWithLabel *_secondSubview;
@@ -42,12 +45,21 @@ typedef enum _RadiusControlValue {
 
 @property (nonatomic, assign, readonly, getter=isExpanded) BOOL expanded;
 @property (nonatomic, retain) UILabel *label;
-
+@property (nonatomic, assign) id <RadiusControlDelegate> delegate;
 @property (nonatomic, retain) RadiusControlSubview *refreshButtonView;
 
 - (void)onRefreshAction:(id)sender;
 
 @end
+
+@protocol RadiusControlDelegate <NSObject>
+
+@optional
+
+- (void)radiusControl:(RadiusControl *)theControl valueChangedTo:(NSNumber *)theNewValue;
+
+@end
+
 
 @interface RadiusControlSubview : UIView {
 	BOOL _selected;

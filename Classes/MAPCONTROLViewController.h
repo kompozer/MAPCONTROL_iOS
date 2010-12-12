@@ -10,7 +10,7 @@
 
 #import "RadiusControl.h"
 
-@interface MAPCONTROLViewController : UIViewController {
+@interface MAPCONTROLViewController : UIViewController <RadiusControlDelegate> {
 	RadiusControl *_radiusControl;
 }
 

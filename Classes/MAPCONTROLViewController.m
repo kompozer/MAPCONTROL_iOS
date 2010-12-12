@@ -30,12 +30,14 @@
 */
 
 
-/*
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	self.radiusControl.delegate = self;
 }
-*/
+
 
 
 /*
@@ -66,9 +68,14 @@
 	self.radiusControl = nil;
 }
 
+- (void)radiusControl:(RadiusControl *)theControl valueChangedTo:(NSNumber *)theNewValue
+{
+	NSLog(@"blub");
+}
+
 
 - (void)dealloc {
-	[_radiusControl release], _radiusControl = nil;
+	_radiusControl.delegate = nil, [_radiusControl release], _radiusControl = nil;
 	
     [super dealloc];
 }
