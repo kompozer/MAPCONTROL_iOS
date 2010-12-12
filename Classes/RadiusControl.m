@@ -126,6 +126,16 @@ static const NSUInteger kRadiusControlFourthSubviewButton = 4;
 	if (NO == [self isExpanded]) {
 		return;
 	}
+	
+	if (self.delegate 
+		&& [self.delegate conformsToProtocol:@protocol(RadiusControlDelegate)] 
+		&& [self.delegate respondsToSelector:@selector(radiusControlRefreshRequired:)]) 
+	{
+		[self.delegate performSelector:@selector(radiusControlRefreshRequired:) 
+							withObject:self];
+	}
+	
+	// Hide 
 	[self performSelector:@selector(_handleDecreasingAnimation) withObject:nil afterDelay:0.1];
 }
 

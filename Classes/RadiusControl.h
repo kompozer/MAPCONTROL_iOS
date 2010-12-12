@@ -58,6 +58,8 @@ typedef enum _RadiusControlValue {
 
 - (void)radiusControl:(RadiusControl *)theControl valueChangedTo:(NSNumber *)theNewValue;
 
+- (void)radiusControlRefreshRequired:(RadiusControl *)theControl;
+
 @end
 
 

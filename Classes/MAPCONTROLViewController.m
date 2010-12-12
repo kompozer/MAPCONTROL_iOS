@@ -8,6 +8,7 @@
 
 #import "MAPCONTROLViewController.h"
 
+
 @implementation MAPCONTROLViewController
 
 @synthesize radiusControl = _radiusControl;
@@ -68,11 +69,21 @@
 	self.radiusControl = nil;
 }
 
+#pragma mark -
+#pragma mark RadiusControlDelegate
+
 - (void)radiusControl:(RadiusControl *)theControl valueChangedTo:(NSNumber *)theNewValue
 {
-	NSLog(@"blub");
+	NSLog(@"%s Value changed", __PRETTY_FUNCTION__);
 }
 
+- (void)radiusControlRefreshRequired:(RadiusControl *)theControl
+{
+	NSLog(@"%s Refresh", __PRETTY_FUNCTION__);
+}
+
+#pragma mark -
+#pragma mark dealloc
 
 - (void)dealloc {
 	_radiusControl.delegate = nil, [_radiusControl release], _radiusControl = nil;
