@@ -36,6 +36,7 @@
 		2787693F11FC24E000760017 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		2787694011FC24E000760017 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		27876A5D11FC309E00760017 /* endless.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = endless.png; sourceTree = "<group>"; };
+		278CDD2212B51A9100F76E31 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		27DFD8ED11FCD7BB0071D013 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2899E5210DE3E06400AC0155 /* MAPCONTROLViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MAPCONTROLViewController.xib; sourceTree = "<group>"; };
@@ -102,6 +103,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				278CDD2212B51A9100F76E31 /* README.md */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
